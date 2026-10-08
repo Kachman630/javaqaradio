@@ -6,19 +6,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RadioTest {
 
     @Test
-    void shouldGoToNextStationFromMiddle() {
+    void shouldCreateWithDefaultStationsCount() {
         Radio radio = new Radio();
-        radio.setCurrentStation(5);
-
-        radio.next();
-
-        assertEquals(6, radio.getCurrentStation());
+        assertEquals(10, radio.getStationsCount());
     }
 
     @Test
-    void shouldGoToZeroFromMaxStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(9);
+    void shouldCreateWithCustomStationsCount() {
+        Radio radio = new Radio(5);
+        assertEquals(5, radio.getStationsCount());
+    }
+
+    @Test
+    void shouldGoToNextStationNormally() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(2);
+
+        radio.next();
+
+        assertEquals(3, radio.getCurrentStation());
+    }
+
+    @Test
+    void shouldWrapToZeroFromMaxStation() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(4);
 
         radio.next();
 
@@ -26,9 +38,19 @@ public class RadioTest {
     }
 
     @Test
-    void shouldGoToPrevStationFromMiddle() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
+    void shouldGoToPrevStationNormally() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(2);
+
+        radio.prev();
+
+        assertEquals(1, radio.getCurrentStation());
+    }
+
+    @Test
+    void shouldWrapToMaxFromZeroStation() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(0);
 
         radio.prev();
 
@@ -36,42 +58,32 @@ public class RadioTest {
     }
 
     @Test
-    void shouldGoToMaxFromZeroStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(0);
-
-        radio.prev();
-
-        assertEquals(9, radio.getCurrentStation());
-    }
-
-    @Test
     void shouldSetValidStation() {
-        Radio radio = new Radio();
+        Radio radio = new Radio(5);
 
-        radio.setCurrentStation(7);
+        radio.setCurrentStation(3);
 
-        assertEquals(7, radio.getCurrentStation());
+        assertEquals(3, radio.getCurrentStation());
     }
 
     @Test
-    void shouldNotSetInvalidStationAboveLimit() {
-        Radio radio = new Radio();
+    void shouldNotSetStationAboveLimit() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(2);
+
         radio.setCurrentStation(5);
 
-        radio.setCurrentStation(10);
-
-        assertEquals(5, radio.getCurrentStation());
+        assertEquals(2, radio.getCurrentStation());
     }
 
     @Test
-    void shouldNotSetInvalidStationBelowLimit() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
+    void shouldNotSetNegativeStation() {
+        Radio radio = new Radio(5);
+        radio.setCurrentStation(2);
 
         radio.setCurrentStation(-1);
 
-        assertEquals(5, radio.getCurrentStation());
+        assertEquals(2, radio.getCurrentStation());
     }
 
     @Test
